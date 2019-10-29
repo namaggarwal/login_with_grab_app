@@ -1,0 +1,6 @@
+{
+  "clientId": "1b143a2453b84c0983545cac16e1ee79",
+  "redirectUri": "gc-1b143a2453b84c0983545cac16e1ee79-u9cpot4q1-adr://browserapp",
+  "scope": "openid name",
+  "acrValues": "consent_ctx:country=sg"
+}

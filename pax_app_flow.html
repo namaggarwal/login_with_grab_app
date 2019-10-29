@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Login With Grab</title>
+  <style type="text/css">
+    .cont {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #btnLogin {
+      padding: 50px;
+      background: #00B14F;
+      color: #FEF9EB;
+      cursor: pointer;
+      flex: 1;
+      margin: 50px;
+      font-size: 42px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="cont">
+    <div id="btnLogin">
+      Click to continue logging in with Grab
+    </div>
+  </div>
+</body>
+
+<script type="text/javascript">
+var sessionID;
+function createSession() {
+  fetch("https://grab-id-int.stg-myteksi.com/v1/oauth2/session", {
+    method: 'POST'
+  })
+  .then(res => res.json())
+  .then(res => {
+    sessionID = res.session_id;
+    loop();
+    initiateLogin(res.session_id);
+  });
+}
+
+function loop(){
+  setTimeout(function(){
+    checkSession(sessionID);
+  },1000);
+}
+function checkSession(sessionID) {
+  fetch(`https://grab-id-int.stg-myteksi.com/v1/oauth2/session/${sessionID}`)
+  .then(res => res.json())
+  .then(res => {
+    if(!res.is_valid){
+      loop();
+      return;
+    }
+
+    console.log("Yayyy done");
+  })
+}
+
+function initiateLogin(sessionID) {
+  const query = window.location.search;
+  const redirectURL = `intent://open?screenType=PARTNERLOGIN&${query.substring(1)}&session_id=${sessionID}&auth_endpoint=https%3A%2F%2Fapi%2Estg%2Dmyteksi%2Ecom%2Fgrabid%2Fv1%2Foauth2%2Fauthorize#Intent;scheme=grab;package=com.grabtaxi.passenger;S.browser_fallback_url=https%3A%2F%2Fwww%2Egoogle%2Ecom;end`
+  console.log("Redirecting to",redirectURL);
+  window.location = redirectURL
+  return false
+}
+
+function attachEvents() {
+  document.getElementById("btnLogin").onclick = createSession;
+}
+
+(function() {
+  attachEvents();
+})()
+
+</script>
+</html>
