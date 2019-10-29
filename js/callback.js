@@ -1,6 +1,6 @@
 
 function loadConfig() {
-  return fetch('/login_with_grab/config.json').
+  return fetch('/login_with_grab_app/config.json').
     then(res => res.json());
 }
 
